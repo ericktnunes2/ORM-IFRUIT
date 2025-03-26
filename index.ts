@@ -23,14 +23,17 @@ let produtos: Produto[] = []
 
 let working = true
 
+let idCounter = 1;
+
 while (working){
    let escolha = Number(prompt("[1] Cadastrar produto | [2] Excluir | [3] Editar | [4] Sair"))
    if (escolha == 1){
     const produto: Produto = new ProdutosEstoque(
-        Number(prompt("Qual o id do produto?")), 
+        idCounter,
         String(prompt("Qual o nome do produto?")), 
         Number(prompt("Qual o preço do produto?"))
     )
+    idCounter ++
     produtos.push(produto)
    }
    else if (escolha == 2){
