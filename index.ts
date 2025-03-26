@@ -24,7 +24,7 @@ let produtos: Produto[] = []
 let working = true
 
 while (working){
-   let escolha = Number(prompt("[1] Cadastrar produto | [2] Excluir | [3] Editar | [4] Sair\n"))
+   let escolha = Number(prompt("[1] Cadastrar produto | [2] Excluir | [3] Editar | [4] Sair"))
    if (escolha == 1){
     const produto: Produto = new ProdutosEstoque(
         Number(prompt("Qual o id do produto?")), 
