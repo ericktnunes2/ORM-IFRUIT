@@ -1,3 +1,6 @@
+import promptSync = require("prompt-sync");
+const prompt = promptSync()
+
 interface Produto {
     id: number;
     nome: String;
@@ -16,12 +19,12 @@ class ProdutosEstoque {
     }
 }
 
-var produtos: Produto[] = []
+let produtos: Produto[] = []
 
-var working = true
+let working = true
 
 while (working){
-   var escolha = Number(prompt("[1] Cadastrar produto | [2] Excluir | [3] Editar | [4] Sair"))
+   let escolha = Number(prompt("[1] Cadastrar produto | [2] Excluir | [3] Editar | [4] Sair"))
    if (escolha == 1){
     const produto: Produto = new ProdutosEstoque(
         Number(prompt("Qual o id do produto?")), 
@@ -32,15 +35,20 @@ while (working){
    }
    else if (escolha == 2){
     console.log(produtos)
-    var id = Number(prompt("Qual o id do objeto que você quer tirar?"))
+    let id = Number(prompt("Qual o id do objeto que você quer tirar?"))
     produtos = produtos.filter(produto => produto.id !== id )
    }
    else if (escolha == 3){
     console.log(produtos)
-    var id = Number(prompt("Qual o id do objeto que você quer editar?"))
-    var produtoParaEditar = produtos.find(produto => produto.id == id)
-    produtoParaEditar.nome = String(prompt("Qual o novo nome?"))
-    produtoParaEditar.preco =  Number(prompt("Qual o novo valor?"))
+    let id = Number(prompt("Qual o id do objeto que você quer editar?"))
+    let produtoParaEditar = produtos.find(produto => produto.id == id)
+        if (produtoParaEditar) {
+            produtoParaEditar.nome = String(prompt("Qual o novo nome?"))
+            produtoParaEditar.preco =  Number(prompt("Qual o novo valor?"))
+        }
+        else{
+            console.log("Produto não encontrado")
+        }
    }
    else{
     working = false
