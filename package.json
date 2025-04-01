@@ -5,14 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node index.ts"
+    "start": "ts-node teste.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^22.13.17",
     "@types/prompt-sync": "^4.2.3",
+    "dotenv": "^16.4.7",
+    "mysql2": "^3.14.0",
     "prompt-sync": "^4.2.0",
+    "reflect-metadata": "^0.2.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   },
