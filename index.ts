@@ -1,11 +1,30 @@
-import promptSync = require("prompt-sync");
+import promptSync from "prompt-sync";
 const prompt = promptSync();
+
+enum MenuOpcoes {
+    CadastrarCategoria = 1,
+    ListarCategorias,
+    BuscarCategoria,
+    ExcluirCategoria,
+    EditarCategoria,
+    Sair
+}
+
+enum MenuProdutoOpcoes {
+    CadastrarProduto = 1,
+    ListarProdutos,
+    BuscarProduto,
+    ExcluirProduto,
+    EditarProduto,
+    Sair
+}
 
 interface Categoria {
     id: number;
     nome: string;
     descricao: string;
     dataCriacao: Date;
+    produtos?: Produto[];
 }
 
 interface Produto {
@@ -19,102 +38,240 @@ interface Produto {
     dataAtualizacao?: Date;
 }
 
-let produtos: Produto[] = [];
-let categorias: Categoria[] = [];
-let working = true;
-let idCounterCategoria = 1;
-let idCounterProduto = 1;
+class Gerenciador {
+    private categorias: Categoria[] = [];
+    private produtos: Produto[] = [];
+    private idCounterCategoria = 1;
+    private idCounterProduto = 1;
 
-while (working) {
-    let workingCategory = true;
-    let workingProduct = true;
+    iniciar() {
+        let working = true;
+        while (working) {
+            console.log("\n======= Menu Principal =======");
+            console.log("1 - Cadastrar Categoria");
+            console.log("2 - Listar Categorias");
+            console.log("3 - Buscar Categoria");
+            console.log("4 - Excluir Categoria");
+            console.log("5 - Editar Categoria");
+            console.log("6 - Sair");
+            console.log("==============================");
+            const escolha = Number(prompt("Escolha uma opção: ")) as MenuOpcoes;
 
-    let escolha = Number(prompt("[1] Categoria | [2] Produto | [3] Sair: "))
-
-    if (escolha == 1){
-        while (workingCategory){
-            let escolhaCategoria = Number(prompt("[1] Cadastrar categoria | [2] Excluir | [3] Editar | [4] Sair: "))
-
-            if (escolhaCategoria === 1) {
-                const categoria: Categoria = {
-                    id: idCounterCategoria,
-                    nome: prompt("Qual o nome da categoria?"),
-                    descricao: prompt("Qual a descrição da categoria?"),
-                    dataCriacao: new Date(),
-                };
-                idCounterCategoria++;
-                categorias.push(categoria);
-            }
-            else if (escolhaCategoria === 2) {
-                console.log(categorias);
-                let id = Number(prompt("Qual o id da categoria que você quer excluir?"));
-                categorias = categorias.filter(categoria => categoria.id !== id);
-            }
-            else if (escolhaCategoria === 3) {
-                console.log(categorias);
-                let id = Number(prompt("Qual o id da categoria que você quer editar?"));
-                let categoriaParaEditar = categorias.find(categoria => categoria.id === id);
-                
-                if (categoriaParaEditar) {
-                    categoriaParaEditar.nome = prompt("Qual o novo nome?");
-                    categoriaParaEditar.descricao = prompt("Qual o novo valor?");
-                } else {
-                    console.log("Categoria não encontrado");
-                }
-            }
-            else {
-                workingCategory = false;
+            switch (escolha) {
+                case MenuOpcoes.CadastrarCategoria:
+                    this.cadastrarCategoria();
+                    break;
+                case MenuOpcoes.ListarCategorias:
+                    this.listarCategorias();
+                    break;
+                case MenuOpcoes.BuscarCategoria:
+                    this.buscarCategoria();
+                    break;
+                case MenuOpcoes.ExcluirCategoria:
+                    this.excluirCategoria();
+                    break;
+                case MenuOpcoes.EditarCategoria:
+                    this.editarCategoria();
+                    break;
+                case MenuOpcoes.Sair:
+                    this.exibirTodosItens();
+                    working = false;
+                    break;
+                default:
+                    console.log("Opção inválida!");
             }
         }
     }
-    else if (escolha == 2){
-        while(workingProduct){
-            let escolhaProduto = Number(prompt("[1] Cadastrar produto | [2] Excluir | [3] Editar | [4] Sair: "));
 
-            if (escolhaProduto === 1) {
-                console.log(categorias)
-                const produto: Produto = {
-                    id: idCounterProduto,
-                    nome: prompt("Qual o nome do produto?"),
-                    descricao: prompt("Qual a descrição do produto?"),
-                    preco: Number(prompt("Qual o preço do produto?")),
-                    quantidade: Number(prompt("Qual a quantidade do produto?")),
-                    categoriaId: Number(prompt("Qual o id da categoria que esse produto faz parte?")),
-                    dataCriacao: new Date(),
-                };
-                idCounterProduto++;
-                produtos.push(produto);
-            } 
-            else if (escolhaProduto === 2) {
-                console.log(produtos);
-                let id = Number(prompt("Qual o id do produto que você quer excluir?"));
-                produtos = produtos.filter(produto => produto.id !== id);
-            } 
-            else if (escolhaProduto === 3) {
-                console.log(produtos);
-                let id = Number(prompt("Qual o id do produto que você quer editar?"));
-                let produtoParaEditar = produtos.find(produto => produto.id === id);
+    private exibirTodosItens(){
+        console.log("\n======= Categorias e Produtos =======");
+
+        if (this.categorias.length === 0) {
+            console.log("Nenhuma categoria cadastrada.");
+        } else {
+            this.categorias.forEach(categoria => {
+                console.log(`\n📂 Categoria: ${categoria.nome} (ID: ${categoria.id})`);
+                console.log(`   Descrição: ${categoria.descricao}`);
+                console.log(`   Criada em: ${categoria.dataCriacao.toLocaleDateString()}`);
                 
-                if (produtoParaEditar) {
-                    produtoParaEditar.nome = prompt("Qual o novo nome?");
-                    produtoParaEditar.descricao = prompt("Qual a nova descrição?")
-                    produtoParaEditar.preco = Number(prompt("Qual o novo valor?"));
-                    produtoParaEditar.quantidade = Number(prompt("Qual a nova quantidade?"))
-                    produtoParaEditar.dataAtualizacao = new Date();
+                if (categoria.produtos && categoria.produtos.length > 0) {
+                    console.log("   Produtos:");
+                    categoria.produtos.forEach(produto => {
+                        console.log(`     - 🛒 ${produto.nome} (ID: ${produto.id})`);
+                        console.log(`       💰 Preço: R$${produto.preco.toFixed(2)} | 📦 Quantidade: ${produto.quantidade}`);
+                        console.log(`       📅 Criado em: ${produto.dataCriacao.toLocaleDateString()}`);
+                        if (produto.dataAtualizacao) {
+                            console.log(`       🔄 Atualizado em: ${produto.dataAtualizacao.toLocaleDateString()}`);
+                        }
+                    });
                 } else {
-                    console.log("Produto não encontrado");
+                    console.log("   ❌ Nenhum produto cadastrado nesta categoria.");
                 }
-            } 
-            else {
-                workingProduct = false;
+            });
+        }
+
+        console.log("\n=====================================");
+    }
+
+    private cadastrarCategoria() {
+        const categoria: Categoria = {
+            id: this.idCounterCategoria++,
+            nome: prompt("Nome da categoria: "),
+            descricao: prompt("Descrição da categoria: "),
+            dataCriacao: new Date(),
+            produtos: []
+        };
+        this.categorias.push(categoria);
+        console.log("Categoria cadastrada com sucesso!\n");
+    }
+
+    private listarCategorias() {
+        console.log("\n======= Lista de Categorias =======");
+        if (this.categorias.length === 0) {
+            console.log("Nenhuma categoria cadastrada.");
+        } else {
+            this.categorias.forEach(categoria => {
+                console.log(`ID: ${categoria.id} | Nome: ${categoria.nome} | Produtos: ${categoria.produtos?.length || 0}`);
+            });
+        }
+    }
+
+    private buscarCategoria() {
+        const busca = prompt("Digite o ID ou nome da categoria: ") || "";
+        const categoria = this.categorias.find(c => c.id === Number(busca) || c.nome.toLowerCase() === busca.toLowerCase());
+
+        if (!categoria) {
+            console.log("Categoria não encontrada.");
+            return;
+        }
+        console.log("Categoria encontrada:", categoria);
+        this.menuProduto(categoria);
+    }
+
+    private excluirCategoria() {
+        const id = Number(prompt("Digite o ID da categoria que deseja excluir: "));
+        let categoria = this.categorias.find(c => c.id == id)
+
+        if(categoria?.produtos?.length !== 0){
+            console.log("Essa categoria tem produtos cadastrados, gostaria de excluí-la?")
+            console.log("1 - Sim")
+            console.log("2 - Não")
+            let escolha = Number(prompt("Escolha uma opção: "))
+            if (escolha == 1){
+                this.categorias = this.categorias.filter(c => c.id !== id);
+                console.log("Categoria excluída com sucesso!");
+            }
+        }
+        else{
+            this.categorias = this.categorias.filter(c => c.id !== id);
+            console.log("Categoria excluída com sucesso!");
+        }
+        
+    }
+
+    private editarCategoria() {
+        const id = Number(prompt("Digite o ID da categoria que deseja editar: "));
+        const categoria = this.categorias.find(c => c.id === id);
+        if (!categoria) {
+            console.log("Categoria não encontrada.");
+            return;
+        }
+        categoria.nome = prompt("Novo nome da categoria: ") || categoria.nome;
+        categoria.descricao = prompt("Nova descrição: ") || categoria.descricao;
+        console.log("Categoria editada com sucesso!");
+    }
+
+    private menuProduto(categoria: Categoria) {
+        let working = true;
+        while (working) {
+            console.log("\n======= Menu de Produtos =======");
+            console.log("1 - Cadastrar Produto");
+            console.log("2 - Listar Produtos");
+            console.log("3 - Buscar Produto");
+            console.log("4 - Excluir Produto");
+            console.log("5 - Editar Produto");
+            console.log("6 - Sair");
+            console.log("==============================");
+            const escolha = Number(prompt("Escolha uma opção: ")) as MenuProdutoOpcoes;
+
+            switch (escolha) {
+                case MenuProdutoOpcoes.CadastrarProduto:
+                    this.cadastrarProduto(categoria);
+                    break;
+                case MenuProdutoOpcoes.ListarProdutos:
+                    console.log(this.produtos);
+                    break;
+                case MenuProdutoOpcoes.BuscarProduto:
+                    this.buscarProduto();
+                    break;
+                case MenuProdutoOpcoes.ExcluirProduto:
+                    const idExcluir = Number(prompt("Digite o ID do produto: "));
+                    categoria.produtos = categoria.produtos?.filter(p => p.id !== idExcluir) || [];
+                    console.log("Produto excluído!");
+                    break;
+                case MenuProdutoOpcoes.EditarProduto:
+                    this.editarProduto()
+                    break;
+                case MenuProdutoOpcoes.Sair:
+                    working = false;
+                    break;
+                default:
+                    console.log("Opção inválida!");
             }
         }
     }
-    else{
-        working = false
+
+    private cadastrarProduto(categoria: Categoria) {
+        const produto: Produto = {
+            id: this.idCounterProduto++,
+            nome: prompt("Nome do produto: ") || "",
+            descricao: prompt("Descrição do produto: ") || "",
+            preco: Number(prompt("Preço: ")) || 0,
+            quantidade: Number(prompt("Quantidade: ")) || 0,
+            categoriaId: categoria.id,
+            dataCriacao: new Date()
+        };
+        this.produtos.push(produto);
+        categoria.produtos?.push(produto);
+        console.log("Produto cadastrado com sucesso!");
     }
-    
+
+    private buscarProduto() {
+        console.log("Você deseja por: ")
+        console.log("1 - Id/nome do Produto")
+        console.log("2 - Id/nome da Categoria")
+        let opcao = Number(prompt("Escolha uma opção: "))
+        if(opcao == 1){
+            console.log("Qual o nome ou id do produto?")
+            let buscaProduto = prompt(": ")
+            let produto = this.produtos.find(p => p.id === Number(buscaProduto) || p.nome.toLowerCase == buscaProduto.toLowerCase)
+
+            console.log(produto)
+        }
+        else{
+            console.log("Qual o nome ou id da categoria?")
+            let buscaProdutosDeCategoria = prompt(": ")
+            let categoria = this.categorias.find(c => c.id === Number(buscaProdutosDeCategoria) || c.nome.toLowerCase == buscaProdutosDeCategoria.toLowerCase)
+
+            console.log(categoria?.produtos)
+        }
+    }
+
+    private editarProduto(){
+        console.log("Qual o nome ou id do produto que você quer editar?")
+        let busca = prompt(": ");
+        let produtoParaEditar = this.produtos.find(p => p.id === Number(busca) || p.nome.toLowerCase == busca.toLowerCase);
+        
+        if (produtoParaEditar) {
+            produtoParaEditar.nome = prompt("Qual o novo nome?");
+            produtoParaEditar.descricao = prompt("Qual a nova descrição?")
+            produtoParaEditar.preco = Number(prompt("Qual o novo valor?"));
+            produtoParaEditar.quantidade = Number(prompt("Qual a nova quantidade?"))
+            produtoParaEditar.dataAtualizacao = new Date();
+        } else {
+            console.log("Produto não encontrado");
+        }
+    }
 }
 
-console.log(categorias);
-console.log(produtos);
+new Gerenciador().iniciar();
