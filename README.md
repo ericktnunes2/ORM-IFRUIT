@@ -11,6 +11,9 @@ npm i @types/prompt-sync<br>
 
 "start": "ts-node index.ts"<br>
 
+<h2>Dentro do repositório atual</h2>
+crie um arquivo nomeado como "index.ts"
+
 <h2>Para rodar:</h2>
 
 npm start<br>
