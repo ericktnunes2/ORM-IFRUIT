@@ -1,42 +1,7 @@
 import promptSync from "prompt-sync";
+import { MenuOpcoes, MenuProdutoOpcoes } from "./enum";
+import { Categoria, Produto } from "./interface";
 const prompt = promptSync();
-
-enum MenuOpcoes {
-    CadastrarCategoria = 1,
-    ListarCategorias,
-    BuscarCategoria,
-    ExcluirCategoria,
-    EditarCategoria,
-    Sair
-}
-
-enum MenuProdutoOpcoes {
-    CadastrarProduto = 1,
-    ListarProdutos,
-    BuscarProduto,
-    ExcluirProduto,
-    EditarProduto,
-    Sair
-}
-
-interface Categoria {
-    id: number;
-    nome: string;
-    descricao: string;
-    dataCriacao: Date;
-    produtos?: Produto[];
-}
-
-interface Produto {
-    id: number;
-    nome: string;
-    descricao: string;
-    preco: number;
-    quantidade: number;
-    categoriaId: number;
-    dataCriacao: Date;
-    dataAtualizacao?: Date;
-}
 
 class Gerenciador {
     private categorias: Categoria[] = [];
