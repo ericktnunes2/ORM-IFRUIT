@@ -27,5 +27,4 @@ export class Categoria{
             this.dataCriacao = new Date()
             this.produtos = []
     }
-
 }
