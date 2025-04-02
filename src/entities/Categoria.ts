@@ -18,13 +18,12 @@ export class Categoria{
     dataCriacao: Date
 
     @OneToMany(() => Produto, (produto) => produto.categoria)
-    produtos: Produto[];
+    produtos!: Produto[];
 
     constructor(nome: string, descricao: string){
             this.id = 0
             this.nome = nome 
             this.descricao = descricao
             this.dataCriacao = new Date()
-            this.produtos = []
     }
 }
