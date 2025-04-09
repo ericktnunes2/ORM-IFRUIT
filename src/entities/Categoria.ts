@@ -6,21 +6,21 @@ import { Produto } from "./Produto";
 export class Categoria{
 
     @PrimaryGeneratedColumn()
-    id: number;
+    public id: number;
 
     @Column()
-    nome: string; 
+    public nome: string; 
 
     @Column()
-    descricao: string 
+    public descricao: string 
 
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-    dataCriacao: Date
+    public dataCriacao: Date
 
     @OneToMany(() => Produto, (produto) => produto.categoria)
-    produtos!: Produto[];
+    public produtos!: Produto[];
 
-    constructor(nome: string, descricao: string){
+    public constructor(nome: string, descricao: string){
             this.id = 0
             this.nome = nome 
             this.descricao = descricao

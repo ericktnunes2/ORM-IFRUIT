@@ -6,32 +6,32 @@ import { Categoria } from "./Categoria";
 export class Produto {
 
     @PrimaryGeneratedColumn()
-    id: number
+    public id: number
 
     @Column()
-    nome: string 
+    public nome: string 
 
     @Column()
-    descricao?: string 
+    public descricao?: string 
 
     @Column()
-    preco: number
+    public preco: number
 
     @Column()
-    quantidade: number
+    public quantidade: number
 
     @CreateDateColumn()
-    dataCriacao: Date
+    public dataCriacao: Date
 
-    @Column()
-    dataAtualizacao?: Date
+    @Column({ nullable: true })
+    public dataAtualizacao?: Date
 
     @ManyToOne(() => Categoria, { eager: true }) // Mapeia a relação
     @JoinColumn({ name: "categoriaId" }) // Especifica que esse campo armazenará o ID
-    categoria: Categoria;
+    public categoria: Categoria;
 
 
-    constructor(nome: string, descricao: string, preco: number, quantidade: number, categoria: Categoria) {
+    public constructor(nome: string, descricao: string, preco: number, quantidade: number, categoria: Categoria) {
         this.id = 0
         this.nome = nome;
         this.descricao = descricao ?? "";
