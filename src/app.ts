@@ -27,6 +27,7 @@ async function mainMenu() {
                 break;
             case "0":
                 rl.close();
+                await AppDataSource.destroy()
                 break;
             default:
                 console.log("Opção inválida!");
